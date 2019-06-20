@@ -1,20 +1,35 @@
 {
   "compilerOptions": {
-    "target": "ES2017",
+    "baseUrl": ".",
+    "paths": {
+      "*": [
+        "types/*"
+      ]
+    },
+    "target": "es2017",
     "module": "commonjs",
-    "lib": ["es2017", "esnext.asynciterable", "dom"],
-    "sourceMap": true,
-    "outDir": "./dist",
-    "rootDir": "./src",
+    "lib": [
+      "es2017",
+      "esnext.asynciterable",
+      "dom"
+    ],
+    "declaration": true,
+    "outDir": "dist",
     "strict": false,
     "noImplicitAny": false,
     "noUnusedLocals": true,
+    "esModuleInterop": true,
     "moduleResolution": "node",
-    "baseUrl": "./src",
-    "typeRoots": ["./node_modules/@types"],
-    "types": ["jest"],
-    "esModuleInterop": true
+    "typeRoots": [
+      "./node_modules/@types"
+    ]
   },
-  "exclude": ["src/**/*.spec.ts"],
-  "include": ["src/**/*"]
+  "exclude": [
+    "node_modules",
+    "dist",
+    "src/**/*.spec.ts"
+  ],
+  "include": [
+    "src/**/*"
+  ]
 }
