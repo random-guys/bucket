@@ -1,12 +1,7 @@
 import mongoose, { Model as MongooseModel, Schema } from 'mongoose';
-import {
-  DuplicateModelError,
-  ModelNotFoundError,
-  PaginationQuery,
-  PaginationQueryResult,
-  Query
-} from '.';
 import { Model } from '../model/index';
+import { PaginationQuery, PaginationQueryResult, Query } from './contracts';
+import { DuplicateModelError, ModelNotFoundError } from './errors';
 
 /**
  * Base Repository class. Provides a CRUD API over Mongoose with some handy helpers.
@@ -187,6 +182,9 @@ export class BaseRepository<T extends Model> {
         result.set(update);
 
         result.save((err, updatedDocument) => {
+          if (err && err.code === 11000)
+            return reject(new DuplicateModelError(`${this.name} exists already`));
+
           if (err) return reject(err);
           resolve(updatedDocument);
         });
@@ -214,6 +212,9 @@ export class BaseRepository<T extends Model> {
         update,
         { new: true },
         (err, result) => {
+          if (err && err.code === 11000)
+            return reject(new DuplicateModelError(`${this.name} exists already`));
+
           if (err) return reject(err);
           if (throwOnNull && !result)
             return reject(new ModelNotFoundError(`${this.name} not found`));
