@@ -24,15 +24,6 @@ export class BaseRepository<T extends Model> {
   }
 
   /**
-   * Checks if the `archived` argument is either undefined
-   * or passed as a false string (in the case of query params), and converts it to a boolean.
-   * @param archived Archived option
-   */
-  private convertArchived = (archived: any) => {
-    return archived === undefined || archived === 'false' ? false : true;
-  };
-
-  /**
    *  Handles the case where a `_id` string is passed as a query
    * @param query string or object query
    */
@@ -48,7 +39,7 @@ export class BaseRepository<T extends Model> {
    */
   create(attributes: object | object[]): Promise<T> {
     return new Promise((resolve, reject) => {
-      this.model.create(attributes, (err, result) => {
+      this.model.create(attributes, (err: any, result: T) => {
         if (err && err.code === 11000)
           return reject(new DuplicateModelError(`${this.name} exists already`));
 
@@ -91,11 +82,9 @@ export class BaseRepository<T extends Model> {
     throwOnNull = true,
     archived?: boolean | string
   ): Promise<T> {
-    archived = this.convertArchived(archived);
-
     const _query = {
       ...query,
-      deleted_at: archived ? { $ne: undefined } : undefined,
+      deleted_at: !!archived ? { $ne: undefined } : undefined,
     };
 
     return new Promise((resolve, reject) => {
@@ -119,11 +108,9 @@ export class BaseRepository<T extends Model> {
    */
   all(query: Query): Promise<T[]> {
     return new Promise((resolve, reject) => {
-      const archived = this.convertArchived(query.archived);
-
       const conditions = {
         ...query.conditions,
-        deleted_at: archived ? { $ne: undefined } : undefined,
+        deleted_at: !!query.archived ? { $ne: undefined } : undefined,
       };
 
       const sort = query.sort || 'created_at';
@@ -149,11 +136,10 @@ export class BaseRepository<T extends Model> {
       const per_page = Number(query.per_page) || 20;
       const offset = page * per_page;
       const sort = query.sort || 'created_at';
-      const archived = this.convertArchived(query.archived);
 
       const conditions = {
         ...query.conditions,
-        deleted_at: archived ? { $ne: undefined } : undefined,
+        deleted_at: !!query.archived ? { $ne: undefined } : undefined,
       };
 
       this.model
