@@ -1,19 +1,35 @@
 {
-  "name": "bucket",
-  "description": "Handy CRUD methods for working with Mongoose",
+  "name": "@random-guys/bucket",
+  "version": "0.1.0",
+  "description": "Wrapper around axios for interservice communication",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
-    "watch": "tsc --watch -p ./tsconfig.json",
     "build": "tsc -p ./tsconfig.json",
-    "test": "jest --runInBand"
+    "watch": "tsc -w -p ./tsconfig.json",
+    "test": "jest --detectOpenHandles --runInBand --forceExit"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/random-guys/sp-lib-starter.git"
+  },
+  "bugs": {
+    "url": "https://github.com/random-guys/sp-lib-starter/issues"
+  },
+  "homepage": "https://github.com/random-guys/sp-lib-starter#readme",
+  "devDependencies": {
+    "@types/jest": "^24.0.14",
+    "@types/mongoose": "^5.5.6",
+    "@types/supertest": "^2.0.7",
+    "@types/uuid": "^3.4.4",
+    "jest": "^24.8.0",
+    "supertest": "^4.0.2",
+    "ts-jest": "^24.0.2",
+    "typescript": "^3.5.2"
   },
   "dependencies": {
     "http-status-codes": "^1.3.2",
     "mongoose": "^5.6.0"
-  },
-  "devDependencies": {
-    "@types/jest": "^24.0.15",
-    "@types/mongoose": "^5.5.6",
-    "jest": "^24.0.0",
-    "ts-jest": "^24.0.2"
   }
 }

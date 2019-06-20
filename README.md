@@ -1,3 +1,11 @@
-# Bucket
+# sp-lib-starter
 
-Handy CRUD methods for working with Mongoose
+Simple description here
+
+## How to install?
+
+
+## How does it work?
+
+## TODO
+[ ] Do something

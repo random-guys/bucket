@@ -1,6 +1,7 @@
-node_modules
 dist
+node_modules
 .env
-.env.staging
+.vscode
+*.log
 yarn-error.log
 .DS_store
