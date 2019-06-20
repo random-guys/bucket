@@ -12,7 +12,7 @@ import { Model } from '../model/index';
  * Base Repository class. Provides a CRUD API over Mongoose with some handy helpers.
  */
 export class BaseRepository<T extends Model> {
-  model: MongooseModel<T>;
+  public readonly model: MongooseModel<T>;
 
   /**
    * Defines/retrieves a mongoose model using the provided collection `name` and schema definition
