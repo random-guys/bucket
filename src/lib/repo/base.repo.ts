@@ -1,12 +1,18 @@
-import mongoose, { Document, Model, Schema } from 'mongoose';
-import { DuplicateModelError, ModelNotFoundError } from '.';
-import { Query, PaginationQueryResult, PaginationQuery } from '.';
+import mongoose, { Model as MongooseModel, Schema } from 'mongoose';
+import {
+  DuplicateModelError,
+  ModelNotFoundError,
+  PaginationQuery,
+  PaginationQueryResult,
+  Query
+} from '.';
+import { Model } from '../model/index';
 
 /**
  * Base Repository class. Provides a CRUD API over Mongoose with some handy helpers.
  */
-export class BaseRepository<T extends Document> {
-  model: Model<T>;
+export class BaseRepository<T extends Model> {
+  model: MongooseModel<T>;
 
   /**
    * Defines/retrieves a mongoose model using the provided collection `name` and schema definition
