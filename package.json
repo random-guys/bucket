@@ -12,12 +12,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/random-guys/sp-lib-starter.git"
+    "url": "git+https://github.com/random-guys/bucket.git"
   },
   "bugs": {
-    "url": "https://github.com/random-guys/sp-lib-starter/issues"
+    "url": "https://github.com/random-guys/bucket/issues"
   },
-  "homepage": "https://github.com/random-guys/sp-lib-starter#readme",
+  "homepage": "https://github.com/random-guys/bucket#readme",
   "devDependencies": {
     "@types/jest": "^24.0.14",
     "@types/mongoose": "^5.5.6",
