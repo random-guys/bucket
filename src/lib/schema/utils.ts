@@ -1,5 +1,5 @@
 import generateUUID from 'uuid/v4';
-import { SchemaTypes, Schema } from 'mongoose';
+import { SchemaTypes, Schema, ConnectionOptions } from 'mongoose';
 
 /**
  * Removes _id field in subdocuments and allows virtual fields to be returned
@@ -71,4 +71,10 @@ export function uniqueIndex(schema: Schema, ...props: string[]) {
   }, { deleted_at: 1 })
   schema.index(indexes, { unique: true })
   return schema
+}
+
+export const defaultMongoOpts: ConnectionOptions = {
+  useCreateIndex: true,
+  useFindAndModify: false,
+  useNewUrlParser: true
 }
