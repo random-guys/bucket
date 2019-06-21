@@ -27,6 +27,14 @@ export class BaseRepository<T extends Model> {
   };
 
   /**
+   * Convert archived param to a mongo query
+   * @param archived archived parameter
+   */
+  private isArchived(archived?: boolean | string) {
+    return !!archived ? { $ne: undefined } : undefined
+  }
+
+  /**
    * Creates one or more documets.
    * Throws a `DuplicateModelError` error if a unique field value is present in any of the documents to be created.
    *
@@ -79,7 +87,7 @@ export class BaseRepository<T extends Model> {
   ): Promise<T> {
     const _query = {
       ...query,
-      deleted_at: !!archived ? { $ne: undefined } : undefined,
+      deleted_at: this.isArchived(archived)
     };
 
     return new Promise((resolve, reject) => {
@@ -105,7 +113,7 @@ export class BaseRepository<T extends Model> {
     return new Promise((resolve, reject) => {
       const conditions = {
         ...query.conditions,
-        deleted_at: !!query.archived ? { $ne: undefined } : undefined,
+        deleted_at: this.isArchived(query.archived)
       };
 
       const sort = query.sort || 'created_at';
@@ -134,7 +142,7 @@ export class BaseRepository<T extends Model> {
 
       const conditions = {
         ...query.conditions,
-        deleted_at: !!query.archived ? { $ne: undefined } : undefined,
+        deleted_at: this.isArchived(query.archived)
       };
 
       this.model
