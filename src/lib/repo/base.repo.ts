@@ -54,6 +54,36 @@ export class BaseRepository<T extends Model> {
   }
 
   /**
+   * Atomically update all the paths in `update` or create a new document
+   * if the query fails.
+   * @param query MongoDB query object or id string
+   * @param update new prop-value mapping
+   */
+  upsert(query: string | object, update: object): Promise<T> {
+    const _query = this.getQuery(query)
+
+    return new Promise((resolve, reject) => {
+      this.model.findOneAndUpdate(
+        _query,
+        { $set: update },
+        {
+          upsert: true,
+          new: true,
+          runValidators: true,
+          setDefaultsOnInsert: true
+        },
+        (err, result) => {
+          if (err && err.code === 11000)
+            return reject(new DuplicateModelError(`${this.name} exists already`))
+
+          if (err) return reject(err)
+          resolve(result)
+        }
+      )
+    })
+  }
+
+  /**
    * Finds a document by its id
    * Returns non-deleted documents by default i.e documents without a `deleted_at` field
    * @param _id Document id
@@ -67,8 +97,7 @@ export class BaseRepository<T extends Model> {
     throwOnNull = true,
     archived?: boolean
   ): Promise<T> {
-    const query = { _id };
-    return this.byQuery(query, projections, throwOnNull, archived);
+    return this.byQuery({ _id }, projections, throwOnNull, archived);
   }
 
   /**
@@ -201,7 +230,7 @@ export class BaseRepository<T extends Model> {
   }
 
   /**
-   * Atomically pdates a single document that matches a particular condition and supports the use of MongoDB operators such as $inc in updates.
+   * Atomically updates a single document that matches a particular condition and using MongoDB operators such as $inc, $set.
    * Uses the MongoDB `findOneAndUpdate` command so it does not trigger mongoose `save` hooks.
    * @param query MongoDB query object or id string
    * @param update Update object
@@ -255,7 +284,9 @@ export class BaseRepository<T extends Model> {
    */
   remove(query: string | object, throwOnNull = true): Promise<T> {
     const update = {
-      deleted_at: new Date(),
+      $set: {
+        deleted_at: new Date()
+      }
     };
 
     return this.atomicUpdate(query, update, throwOnNull);
