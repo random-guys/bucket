@@ -201,7 +201,7 @@ export class BaseRepository<T extends Model> {
   }
 
   /**
-   * Atomically pdates a single document that matches a particular condition and supports the use of MongoDB operators such as $inc in updates.
+   * Atomically updates a single document that matches a particular condition and supports the use of MongoDB operators such as $inc in updates.
    * Uses the MongoDB `findOneAndUpdate` command so it does not trigger mongoose `save` hooks.
    * @param query MongoDB query object or id string
    * @param update Update object
@@ -255,7 +255,9 @@ export class BaseRepository<T extends Model> {
    */
   remove(query: string | object, throwOnNull = true): Promise<T> {
     const update = {
-      deleted_at: new Date(),
+      $set: {
+        deleted_at: new Date()
+      }
     };
 
     return this.atomicUpdate(query, update, throwOnNull);
