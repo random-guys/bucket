@@ -1,5 +1,5 @@
 import generateUUID from 'uuid/v4';
-import { SchemaTypes } from 'mongoose';
+import { SchemaTypes, Schema } from 'mongoose';
 
 /**
  * Removes _id field in subdocuments and allows virtual fields to be returned
@@ -58,3 +58,17 @@ export const lowercaseString = {
   type: SchemaTypes.String,
   lowercase: true,
 };
+
+/**
+ * Creates a unique index for a document taking into account support
+ * for soft deletes
+ * @param schema Schema of Document
+ * @param props properties to be part of unique index
+ */
+export function uniqueIndex(schema: Schema, ...props: string[]) {
+  const indexes = props.reduce((idx, k) => {
+    idx[k] = 1; return idx
+  }, { deleted_at: 1 })
+  schema.index(indexes, { unique: true })
+  return schema
+}
