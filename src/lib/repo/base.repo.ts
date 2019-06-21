@@ -220,7 +220,7 @@ export class BaseRepository<T extends Document> {
       this.model.findOneAndUpdate(
         _query,
         update,
-        { new: true },
+        { new: true, runValidators: true },
         (err, result) => {
           if (err) return reject(err);
           if (throwOnNull && !result)
