@@ -1,12 +1,13 @@
-import mongoose, { Document, Model, Schema } from 'mongoose';
-import { DuplicateModelError, ModelNotFoundError } from '.';
-import { Query, PaginationQueryResult, PaginationQuery } from '.';
+import mongoose, { Model as MongooseModel, Schema } from 'mongoose';
+import { Model } from '../model/index';
+import { PaginationQuery, PaginationQueryResult, Query } from './contracts';
+import { DuplicateModelError, ModelNotFoundError } from './errors';
 
 /**
  * Base Repository class. Provides a CRUD API over Mongoose with some handy helpers.
  */
-export class BaseRepository<T extends Document> {
-  model: Model<T>;
+export class BaseRepository<T extends Model> {
+  public readonly model: MongooseModel<T>;
 
   /**
    * Defines/retrieves a mongoose model using the provided collection `name` and schema definition
@@ -18,21 +19,20 @@ export class BaseRepository<T extends Document> {
   }
 
   /**
-   * Checks if the `archived` argument is either undefined
-   * or passed as a false string (in the case of query params), and converts it to a boolean.
-   * @param archived Archived option
-   */
-  private convertArchived = (archived: any) => {
-    return archived === undefined || archived === 'false' ? false : true;
-  };
-
-  /**
    *  Handles the case where a `_id` string is passed as a query
    * @param query string or object query
    */
   getQuery = (query: string | object) => {
     return typeof query === 'string' ? { _id: query } : query;
   };
+
+  /**
+   * Convert archived param to a mongo query
+   * @param archived archived parameter
+   */
+  private isArchived(archived?: boolean | string) {
+    return !!archived ? { $ne: undefined } : undefined
+  }
 
   /**
    * Creates one or more documets.
@@ -42,7 +42,7 @@ export class BaseRepository<T extends Document> {
    */
   create(attributes: object | object[]): Promise<T> {
     return new Promise((resolve, reject) => {
-      this.model.create(attributes, (err, result) => {
+      this.model.create(attributes, (err: any, result: T) => {
         if (err && err.code === 11000)
           return reject(new DuplicateModelError(`${this.name} exists already`));
 
@@ -85,11 +85,9 @@ export class BaseRepository<T extends Document> {
     throwOnNull = true,
     archived?: boolean | string
   ): Promise<T> {
-    archived = this.convertArchived(archived);
-
     const _query = {
       ...query,
-      deleted_at: archived ? { $ne: undefined } : undefined,
+      deleted_at: this.isArchived(archived)
     };
 
     return new Promise((resolve, reject) => {
@@ -113,11 +111,9 @@ export class BaseRepository<T extends Document> {
    */
   all(query: Query): Promise<T[]> {
     return new Promise((resolve, reject) => {
-      const archived = this.convertArchived(query.archived);
-
       const conditions = {
         ...query.conditions,
-        deleted_at: archived ? { $ne: undefined } : undefined,
+        deleted_at: this.isArchived(query.archived)
       };
 
       const sort = query.sort || 'created_at';
@@ -143,11 +139,10 @@ export class BaseRepository<T extends Document> {
       const per_page = Number(query.per_page) || 20;
       const offset = page * per_page;
       const sort = query.sort || 'created_at';
-      const archived = this.convertArchived(query.archived);
 
       const conditions = {
         ...query.conditions,
-        deleted_at: archived ? { $ne: undefined } : undefined,
+        deleted_at: this.isArchived(query.archived)
       };
 
       this.model
@@ -195,6 +190,9 @@ export class BaseRepository<T extends Document> {
         result.set(update);
 
         result.save((err, updatedDocument) => {
+          if (err && err.code === 11000)
+            return reject(new DuplicateModelError(`${this.name} exists already`));
+
           if (err) return reject(err);
           resolve(updatedDocument);
         });
@@ -222,6 +220,9 @@ export class BaseRepository<T extends Document> {
         update,
         { new: true, runValidators: true },
         (err, result) => {
+          if (err && err.code === 11000)
+            return reject(new DuplicateModelError(`${this.name} exists already`));
+
           if (err) return reject(err);
           if (throwOnNull && !result)
             return reject(new ModelNotFoundError(`${this.name} not found`));
