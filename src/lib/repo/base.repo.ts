@@ -3,7 +3,7 @@ import { Model } from '../model/index';
 import { PaginationQuery, PaginationQueryResult, Query } from './contracts';
 import { DuplicateModelError, ModelNotFoundError } from './errors';
 
-type MongooseNamespace = typeof import('mongoose')
+export type MongooseNamespace = typeof import('mongoose')
 
 /**
  * Base Repository class. Provides a CRUD API over Mongoose with some handy helpers.
