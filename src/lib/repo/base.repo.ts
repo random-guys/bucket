@@ -1,7 +1,9 @@
-import mongoose, { Model as MongooseModel, Schema } from 'mongoose';
+import { Model as MongooseModel, Schema } from 'mongoose';
 import { Model } from '../model/index';
 import { PaginationQuery, PaginationQueryResult, Query } from './contracts';
 import { DuplicateModelError, ModelNotFoundError } from './errors';
+
+type MongooseNamespace = typeof import('mongoose')
 
 /**
  * Base Repository class. Provides a CRUD API over Mongoose with some handy helpers.
@@ -14,7 +16,7 @@ export class BaseRepository<T extends Model> {
    * @param name Collection name
    * @param schema Schema definition
    */
-  constructor(private name: string, schema: Schema) {
+  constructor(mongoose: MongooseNamespace, private name: string, schema: Schema) {
     this.model = mongoose.model<T>(name, schema);
   }
 
