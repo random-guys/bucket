@@ -44,8 +44,13 @@ export function getUniqueProps(schema: SchemaDefinition) {
   for (const k of Object.keys(schema)) {
     const propType = schema[k]
     if (propType['unique']) {
+      // prevent creating unique index
+      // @ts-ignore sure, wisdom knowledge and understanding
+      const { unique, ...rest } = propType
+      schema[k] = rest
+
+      // add to unique props
       uniqueProps.push(k)
-      delete propType['unique']
     }
   }
   return uniqueProps
