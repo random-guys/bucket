@@ -16,7 +16,11 @@ export class BaseRepository<T extends Model> {
    * @param name Collection name
    * @param schema Schema definition
    */
-  constructor(mongoose: MongooseNamespace, private name: string, schema: Schema) {
+  constructor(
+    mongoose: MongooseNamespace,
+    public readonly name: string,
+    schema: Schema
+  ) {
     this.model = mongoose.model<T>(name, schema);
   }
 
