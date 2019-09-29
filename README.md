@@ -1,10 +1,11 @@
 # bucket
 
-Handy CRUD methods for working with Mongoose 
+Handy CRUD methods for working with Mongoose
 
-## How to install?
+## How to install
+
 `yarn add @random-guys/bucket`
 
-## How does it work?
+## How does it work
 
 ## TODO
