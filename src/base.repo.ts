@@ -1,7 +1,7 @@
 import { Model as MongooseModel, Schema } from 'mongoose';
 import { Model } from './base.model';
-import { DuplicateModelError, ModelNotFoundError } from './errors.repo';
-import { PaginationQuery, PaginationQueryResult, Query } from './query.repo';
+import { DuplicateModelError, ModelNotFoundError } from './errors';
+import { PaginationQuery, PaginationQueryResult, Query } from './query';
 
 export type MongooseNamespace = typeof import('mongoose');
 
