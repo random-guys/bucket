@@ -1,5 +1,5 @@
+import { Schema, SchemaTypes } from 'mongoose';
 import generateUUID from 'uuid/v4';
-import { SchemaTypes, Schema, ConnectionOptions } from 'mongoose';
 
 /**
  * Removes _id field in subdocuments and allows virtual fields to be returned
@@ -8,12 +8,12 @@ export const readMapper = {
   toJSON: {
     virtuals: true,
     versionKey: false,
-    transform: (doc, ret, options) => {
+    transform: (doc: any, ret: any, options: any) => {
       delete ret._id;
       if (ret.password) delete ret.password;
       return ret;
-    },
-  },
+    }
+  }
 };
 
 /**
@@ -22,8 +22,8 @@ export const readMapper = {
 export const timestamps = {
   timestamps: {
     createdAt: 'created_at',
-    updatedAt: 'updated_at',
-  },
+    updatedAt: 'updated_at'
+  }
 };
 
 /**
@@ -31,7 +31,7 @@ export const timestamps = {
  */
 export const uuid = {
   type: SchemaTypes.String,
-  default: generateUUID,
+  default: generateUUID
 };
 
 /**
@@ -40,7 +40,7 @@ export const uuid = {
 export const trimmedLowercaseString = {
   type: SchemaTypes.String,
   trim: true,
-  lowercase: true,
+  lowercase: true
 };
 
 /**
@@ -48,7 +48,7 @@ export const trimmedLowercaseString = {
  */
 export const trimmedString = {
   type: SchemaTypes.String,
-  trim: true,
+  trim: true
 };
 
 /**
@@ -56,7 +56,7 @@ export const trimmedString = {
  */
 export const lowercaseString = {
   type: SchemaTypes.String,
-  lowercase: true,
+  lowercase: true
 };
 
 /**
@@ -66,15 +66,13 @@ export const lowercaseString = {
  * @param props properties to be part of unique index
  */
 export function uniqueIndex(schema: Schema, ...props: string[]) {
-  const indexes = props.reduce((idx, k) => {
-    idx[k] = 1; return idx
-  }, { deleted_at: 1 })
-  schema.index(indexes, { unique: true })
-  return schema
-}
-
-export const defaultMongoOpts: ConnectionOptions = {
-  useCreateIndex: true,
-  useFindAndModify: false,
-  useNewUrlParser: true
+  const indexes = props.reduce(
+    (idx, k) => {
+      idx[k] = 1;
+      return idx;
+    },
+    { deleted_at: 1 }
+  );
+  schema.index(indexes, { unique: true });
+  return schema;
 }

@@ -1,9 +1,9 @@
 import { Model as MongooseModel, Schema } from 'mongoose';
-import { Model } from '../model/index';
-import { PaginationQuery, PaginationQueryResult, Query } from './contracts';
+import { Model } from './base.model';
 import { DuplicateModelError, ModelNotFoundError } from './errors';
+import { PaginationQuery, PaginationQueryResult, Query } from './query';
 
-export type MongooseNamespace = typeof import('mongoose')
+export type MongooseNamespace = typeof import('mongoose');
 
 /**
  * Base Repository class. Provides a CRUD API over Mongoose with some handy helpers.
@@ -37,7 +37,7 @@ export class BaseRepository<T extends Model> {
    * @param archived archived parameter
    */
   private isArchived(archived?: boolean | string) {
-    return !!archived ? { $ne: undefined } : undefined
+    return !!archived ? { $ne: undefined } : undefined;
   }
 
   /**
@@ -66,7 +66,7 @@ export class BaseRepository<T extends Model> {
    * @param update new prop-value mapping
    */
   upsert(query: string | object, update: object): Promise<T> {
-    const _query = this.getQuery(query)
+    const _query = this.getQuery(query);
 
     return new Promise((resolve, reject) => {
       this.model.findOneAndUpdate(
@@ -80,13 +80,15 @@ export class BaseRepository<T extends Model> {
         },
         (err, result) => {
           if (err && err.code === 11000)
-            return reject(new DuplicateModelError(`${this.name} exists already`))
+            return reject(
+              new DuplicateModelError(`${this.name} exists already`)
+            );
 
-          if (err) return reject(err)
-          resolve(result)
+          if (err) return reject(err);
+          resolve(result);
         }
-      )
-    })
+      );
+    });
   }
 
   /**
@@ -193,7 +195,7 @@ export class BaseRepository<T extends Model> {
             page: page + 1,
             per_page,
             sort,
-            result,
+            result
           };
 
           resolve(PaginationQueryResult);
@@ -226,7 +228,9 @@ export class BaseRepository<T extends Model> {
 
         result.save((err, updatedDocument) => {
           if (err && err.code === 11000)
-            return reject(new DuplicateModelError(`${this.name} exists already`));
+            return reject(
+              new DuplicateModelError(`${this.name} exists already`)
+            );
 
           if (err) return reject(err);
           resolve(updatedDocument);
@@ -256,7 +260,9 @@ export class BaseRepository<T extends Model> {
         { new: true, runValidators: true },
         (err, result) => {
           if (err && err.code === 11000)
-            return reject(new DuplicateModelError(`${this.name} exists already`));
+            return reject(
+              new DuplicateModelError(`${this.name} exists already`)
+            );
 
           if (err) return reject(err);
           if (throwOnNull && !result)
