@@ -11,6 +11,7 @@ export const defaultMongoOpts: ConnectionOptions = {
   useCreateIndex: true,
   useFindAndModify: false,
   useNewUrlParser: true,
+  // @ts-ignore this language can be extremely stupid
   useUnifiedTopology: true
 };
 
