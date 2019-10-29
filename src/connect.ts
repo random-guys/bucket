@@ -22,3 +22,7 @@ export const secureMongoOpts = (config: MongoConfig): ConnectionOptions => {
     pass: config.mongodb_password
   };
 };
+
+export function createConfig(appEnv: string, config: MongoConfig) {
+  return appEnv === 'dev' ? defaultMongoOpts : secureMongoOpts(config);
+}
