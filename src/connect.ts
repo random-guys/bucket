@@ -3,7 +3,6 @@ import { ConnectionOptions } from 'mongoose';
 export interface MongoConfig {
   mongodb_url: string;
   mongodb_username: string;
-  mongodb_name: string;
   mongodb_password: string;
 }
 
