@@ -10,7 +10,7 @@ yarn add @random-guys/bucket
 
 or
 
-```
+```shell
 npm install @random-guys/bucket
 ```
 
