@@ -152,7 +152,7 @@ export class BaseRepository<T extends Model> {
    */
   list(query: PaginationQuery): Promise<PaginationQueryResult<T>> {
     return new Promise((resolve, reject) => {
-      const page = Number(query.page) - 1 || 0;
+      const page = Number(query.page) > 1 ? Number(query.page) - 1 : 1;
       const per_page = Number(query.per_page) || 20;
       const offset = page * per_page;
       const sort = query.sort || "created_at";
