@@ -1,5 +1,5 @@
-import { Schema, SchemaTypes } from 'mongoose';
-import generateUUID from 'uuid/v4';
+import { Schema, SchemaTypes } from "mongoose";
+import generateUUID from "uuid/v4";
 
 /**
  * Removes _id field in subdocuments and allows virtual fields to be returned
@@ -21,8 +21,8 @@ export const readMapper = {
  */
 export const timestamps = {
   timestamps: {
-    createdAt: 'created_at',
-    updatedAt: 'updated_at'
+    createdAt: "created_at",
+    updatedAt: "updated_at"
   }
 };
 

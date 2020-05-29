@@ -1,4 +1,4 @@
-import { ConnectionOptions } from 'mongoose';
+import { ConnectionOptions } from "mongoose";
 
 export interface MongoConfig {
   mongodb_url: string;
@@ -23,5 +23,5 @@ export const secureMongoOpts = (config: MongoConfig): ConnectionOptions => {
 };
 
 export function createConfig(appEnv: string, config: MongoConfig) {
-  return appEnv === 'dev' ? defaultMongoOpts : secureMongoOpts(config);
+  return appEnv === "dev" ? defaultMongoOpts : secureMongoOpts(config);
 }

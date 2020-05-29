@@ -2,17 +2,11 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "*": [
-        "types/*"
-      ]
+      "*": ["types/*"]
     },
     "target": "es2017",
     "module": "commonjs",
-    "lib": [
-      "es2017",
-      "esnext.asynciterable",
-      "dom"
-    ],
+    "lib": ["es2017", "esnext.asynciterable", "dom"],
     "declaration": true,
     "outDir": "dist",
     "strict": false,
@@ -20,16 +14,8 @@
     "noUnusedLocals": true,
     "esModuleInterop": true,
     "moduleResolution": "node",
-    "typeRoots": [
-      "./node_modules/@types"
-    ]
+    "typeRoots": ["./node_modules/@types"]
   },
-  "exclude": [
-    "node_modules",
-    "dist",
-    "src/**/*.spec.ts"
-  ],
-  "include": [
-    "src/**/*"
-  ]
+  "exclude": ["node_modules", "dist", "src/**/*.spec.ts"],
+  "include": ["src/**/*"]
 }
