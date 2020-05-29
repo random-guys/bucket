@@ -56,12 +56,20 @@ jobs:
       - image: circleci/node:10
     steps:
       - checkout
-      - attach_workspace:
-          at: .
+      - restore_cache:
+          keys:
+            - dependency-cache-{{checksum "package.json"}}
+            - dependency-cache-
+      - run:
+          name: Install dependencies
+          command: yarn
+      - save_cache:
+          key: dependency-cache-{{checksum "package.json"}}
+          paths:
+            - node_modules
       - run:
           name: Deploy to NPM Registry
           command: |
-            yarn
             yarn build
             yarn add npm-cli-login
             NPM_USER=$CIRCLE_NPM_USER NPM_PASS=$CIRCLE_NPM_PASS NPM_EMAIL=$CIRCLE_NPM_EMAIL node ./node_modules/npm-cli-login/bin/npm-cli-login.js
