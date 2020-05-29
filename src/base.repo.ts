@@ -1,9 +1,7 @@
-import { Model as MongooseModel, Schema, Connection } from "mongoose";
+import { Connection, Model as MongooseModel, Schema } from "mongoose";
 import { Model } from "./base.model";
 import { DuplicateModelError, ModelNotFoundError } from "./errors";
 import { PaginationQuery, PaginationQueryResult, Query } from "./query";
-
-export type MongooseNamespace = typeof import("mongoose");
 
 /**
  * Base Repository class. Provides a CRUD API over Mongoose with some handy helpers.
@@ -13,20 +11,21 @@ export class BaseRepository<T extends Model> {
 
   /**
    * Defines/retrieves a mongoose model using the provided collection `name` and schema definition
+   * @param conn connection created using mongoose.connect or mongoose.createConnection
    * @param name Collection name
    * @param schema Schema definition
    */
-  constructor(mongoose: Connection, public readonly name: string, schema: Schema) {
-    this.model = mongoose.model<T>(name, schema);
+  constructor(conn: Connection, public readonly name: string, schema: Schema) {
+    this.model = conn.model<T>(name, schema);
   }
 
   /**
-   *  Handles the case where a `_id` string is passed as a query
+   * Handles the case where a `_id` string is passed as a query
    * @param query string or object query
    */
-  getQuery = (query: string | object) => {
-    return typeof query === 'string' ? { _id: query } : query;
-  };
+  getQuery(query: string | object) {
+    return typeof query === "string" ? { _id: query } : query;
+  }
 
   /**
    * Convert archived param to a mongo query
@@ -45,8 +44,7 @@ export class BaseRepository<T extends Model> {
   create(attributes: object | object[]): Promise<T> {
     return new Promise((resolve, reject) => {
       this.model.create(attributes, (err: any, result: T) => {
-        if (err && err.code === 11000)
-          return reject(new DuplicateModelError(`${this.name} exists already`));
+        if (err && err.code === 11000) return reject(new DuplicateModelError(`${this.name} exists already`));
 
         if (err) return reject(err);
 
@@ -75,10 +73,7 @@ export class BaseRepository<T extends Model> {
           setDefaultsOnInsert: true
         },
         (err, result) => {
-          if (err && err.code === 11000)
-            return reject(
-              new DuplicateModelError(`${this.name} exists already`)
-            );
+          if (err && err.code === 11000) return reject(new DuplicateModelError(`${this.name} exists already`));
 
           if (err) return reject(err);
           resolve(result);
@@ -95,12 +90,7 @@ export class BaseRepository<T extends Model> {
    * @param throwOnNull Whether to throw a `ModelNotFoundError` error if the document is not found. Defaults to true
    * @param archived Whether to return deleted files
    */
-  byID(
-    _id: string,
-    projections?: string | object,
-    throwOnNull = true,
-    archived?: boolean
-  ): Promise<T> {
+  byID(_id: string, projections?: string | object, throwOnNull = true, archived?: boolean): Promise<T> {
     return this.byQuery({ _id }, projections, throwOnNull, archived);
   }
 
@@ -112,12 +102,7 @@ export class BaseRepository<T extends Model> {
    * @param throwOnNull Whether to throw a `ModelNotFoundError` error if the document is not found. Defaults to true
    * @param archived Whether to return deleted files
    */
-  byQuery(
-    query: object,
-    projections?: any,
-    throwOnNull = true,
-    archived?: boolean | string
-  ): Promise<T> {
+  byQuery(query: object, projections?: any, throwOnNull = true, archived?: boolean | string): Promise<T> {
     const _query = {
       ...query,
       deleted_at: this.isArchived(archived)
@@ -130,8 +115,7 @@ export class BaseRepository<T extends Model> {
         .exec((err, result) => {
           if (err) return reject(err);
 
-          if (throwOnNull && !result)
-            return reject(new ModelNotFoundError(`${this.name} not found`));
+          if (throwOnNull && !result) return reject(new ModelNotFoundError(`${this.name} not found`));
 
           resolve(result);
         });
@@ -149,7 +133,7 @@ export class BaseRepository<T extends Model> {
         deleted_at: this.isArchived(query.archived)
       };
 
-      const sort = query.sort || 'created_at';
+      const sort = query.sort || "created_at";
 
       this.model
         .find(conditions)
@@ -171,7 +155,7 @@ export class BaseRepository<T extends Model> {
       const page = Number(query.page) - 1 || 0;
       const per_page = Number(query.per_page) || 20;
       const offset = page * per_page;
-      const sort = query.sort || 'created_at';
+      const sort = query.sort || "created_at";
 
       const conditions = {
         ...query.conditions,
@@ -206,27 +190,19 @@ export class BaseRepository<T extends Model> {
    * @param update Update onbject
    * @param throwOnNull Whether to throw a `ModelNotFoundError` error if the document is not found. Defaults to true
    */
-  update(
-    query: string | object,
-    update: object,
-    throwOnNull = true
-  ): Promise<T> {
+  update(query: string | object, update: object, throwOnNull = true): Promise<T> {
     const _query = this.getQuery(query);
 
     return new Promise((resolve, reject) => {
       this.model.findOne(_query, (err, result) => {
         if (err) return reject(err);
 
-        if (throwOnNull && !result)
-          return reject(new ModelNotFoundError(`${this.name} not found`));
+        if (throwOnNull && !result) return reject(new ModelNotFoundError(`${this.name} not found`));
 
         result.set(update);
 
         result.save((err, updatedDocument) => {
-          if (err && err.code === 11000)
-            return reject(
-              new DuplicateModelError(`${this.name} exists already`)
-            );
+          if (err && err.code === 11000) return reject(new DuplicateModelError(`${this.name} exists already`));
 
           if (err) return reject(err);
           resolve(updatedDocument);
@@ -242,30 +218,17 @@ export class BaseRepository<T extends Model> {
    * @param update Update object
    * @param throwOnNull Whether to throw a `ModelNotFoundError` error if the document is not found. Defaults to true
    */
-  atomicUpdate(
-    query: string | object,
-    update: object,
-    throwOnNull = true
-  ): Promise<T> {
+  atomicUpdate(query: string | object, update: object, throwOnNull = true): Promise<T> {
     const _query = this.getQuery(query);
 
     return new Promise((resolve, reject) => {
-      this.model.findOneAndUpdate(
-        _query,
-        update,
-        { new: true, runValidators: true },
-        (err, result) => {
-          if (err && err.code === 11000)
-            return reject(
-              new DuplicateModelError(`${this.name} exists already`)
-            );
+      this.model.findOneAndUpdate(_query, update, { new: true, runValidators: true }, (err, result) => {
+        if (err && err.code === 11000) return reject(new DuplicateModelError(`${this.name} exists already`));
 
-          if (err) return reject(err);
-          if (throwOnNull && !result)
-            return reject(new ModelNotFoundError(`${this.name} not found`));
-          resolve(result);
-        }
-      );
+        if (err) return reject(err);
+        if (throwOnNull && !result) return reject(new ModelNotFoundError(`${this.name} not found`));
+        resolve(result);
+      });
     });
   }
 
@@ -312,8 +275,7 @@ export class BaseRepository<T extends Model> {
       this.model.findOneAndDelete(_query, (err, result) => {
         if (err) return reject(err);
 
-        if (throwOnNull && !result)
-          return reject(new ModelNotFoundError(`${this.name} not found`));
+        if (throwOnNull && !result) return reject(new ModelNotFoundError(`${this.name} not found`));
 
         resolve(result);
       });

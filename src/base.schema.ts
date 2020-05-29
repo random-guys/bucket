@@ -1,6 +1,10 @@
-import { Schema, SchemaDefinition, SchemaOptions, SchemaTypes } from 'mongoose';
-import { Model } from './base.model';
-import { readMapper, timestamps, uuid } from './utils.schema';
+import { Schema, SchemaDefinition, SchemaOptions, SchemaTypes } from "mongoose";
+import { Model } from "./base.model";
+import { readMapper, timestamps, uuid } from "./utils.schema";
+
+export const ArrayItemSchema = (schema: SchemaDefinition) => {
+  return new Schema(schema, { _id: false });
+};
 
 export const SchemaFactory = <T extends Model>(
   schema: SchemaDefinition,
@@ -8,7 +12,7 @@ export const SchemaFactory = <T extends Model>(
   autoIndex: boolean = true
 ) => {
   if (!schema || Object.keys(schema).length === 0) {
-    throw new Error('Please specify schema definition');
+    throw new Error("Please specify schema definition");
   }
 
   const mongooseSchema = new Schema<T>(
@@ -38,7 +42,7 @@ export function getUniqueProps(schema: SchemaDefinition) {
   const uniqueProps = [];
   for (const k of Object.keys(schema)) {
     const propType = schema[k];
-    if (propType['unique']) {
+    if (propType["unique"]) {
       // prevent creating unique index
       // @ts-ignore surely, wisdom knowledge and understanding
       const { unique, ...rest } = propType;

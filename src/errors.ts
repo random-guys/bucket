@@ -1,4 +1,4 @@
-import { BAD_REQUEST, NOT_FOUND } from 'http-status-codes';
+import { BAD_REQUEST, NOT_FOUND } from "http-status-codes";
 
 class RepositoryError extends Error {
   code: number;
