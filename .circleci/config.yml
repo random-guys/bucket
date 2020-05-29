@@ -61,6 +61,7 @@ jobs:
       - run:
           name: Deploy to NPM Registry
           command: |
+            yarn
             yarn build
             yarn add npm-cli-login
             NPM_USER=$CIRCLE_NPM_USER NPM_PASS=$CIRCLE_NPM_PASS NPM_EMAIL=$CIRCLE_NPM_EMAIL node ./node_modules/npm-cli-login/bin/npm-cli-login.js
@@ -89,4 +90,4 @@ workflows:
           context: library
           filters:
             branches:
-              only: master
+              only: release
