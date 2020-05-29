@@ -38,12 +38,13 @@ export class BaseRepository<T extends Model> {
   /**
    * Creates one or more documets.
    * Throws a `DuplicateModelError` error if a unique field value is present in any of the documents to be created.
-   *
    * @param attributes The document(s) to be created
    */
-  create(attributes: object | object[]): Promise<T> {
+  create(attributes: Partial<T>): Promise<T>;
+  create(attributes: Partial<T>[]): Promise<T[]>;
+  create(attributes: Partial<T> | Partial<T>[]): Promise<T | T[]> {
     return new Promise((resolve, reject) => {
-      this.model.create(attributes, (err: any, result: T) => {
+      this.model.create(attributes, (err: any, result: T | T[]) => {
         if (err && err.code === 11000) return reject(new DuplicateModelError(`${this.name} exists already`));
 
         if (err) return reject(err);
@@ -59,7 +60,7 @@ export class BaseRepository<T extends Model> {
    * @param query MongoDB query object or id string
    * @param update new prop-value mapping
    */
-  upsert(query: string | object, update: object): Promise<T> {
+  upsert(query: string | object, update: Partial<T>): Promise<T> {
     const _query = this.getQuery(query);
 
     return new Promise((resolve, reject) => {
@@ -190,7 +191,7 @@ export class BaseRepository<T extends Model> {
    * @param update Update onbject
    * @param throwOnNull Whether to throw a `ModelNotFoundError` error if the document is not found. Defaults to true
    */
-  update(query: string | object, update: object, throwOnNull = true): Promise<T> {
+  update(query: string | object, update: Partial<T>, throwOnNull = true): Promise<T> {
     const _query = this.getQuery(query);
 
     return new Promise((resolve, reject) => {
