@@ -85,6 +85,7 @@ workflows:
               ignore:
                 - master
                 - release
+                - /release-.*/
       - test:
           context: library
           requires:
@@ -94,8 +95,11 @@ workflows:
               ignore:
                 - master
                 - release
+                - /release-.*/
       - deploy:
           context: library
           filters:
             branches:
-              only: release
+              only:
+                - release
+                - /release-.*/
