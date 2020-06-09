@@ -8,7 +8,7 @@ const config = {
   changelogCollectionName: "changelog",
 
   // The file extension to create migrations and search for in migration dir
-  migrationFileExtension: ".ts"
+  migrationFileExtension: ".js"
 };
 
 // Return the config as a promise
