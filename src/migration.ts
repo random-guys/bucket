@@ -5,8 +5,8 @@ import path from "path";
 import format from "date-fns/format";
 
 const PREFIX_FORMAT = "yyyyMMddHHmmss";
-const DEFAULT_MIGRATION_DIR = "src/migrations";
-const DEFAULT_CONFIG_FILE_NAME = "migrate-mongo-config.js";
+export const DEFAULT_MIGRATION_DIR = "src/migrations";
+export const DEFAULT_CONFIG_FILE_NAME = "migrate-mongo-config.js";
 
 /**
  * Applies all unapplied migrations to the DB. Note that it passes the mongoose
@@ -56,7 +56,7 @@ export async function create(description: string) {
   const destination = path.join(migrationsDir, filename);
   await fs.promises.copyFile(source, destination);
 
-  return filename;
+  return destination;
 }
 
 export async function init() {
