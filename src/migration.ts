@@ -1,4 +1,4 @@
-import fs from "fs-extra";
+import fs from "fs";
 import { down, up, config } from "migrate-mongo";
 import { Connection } from "mongoose";
 import path from "path";
@@ -42,7 +42,7 @@ export async function create(description: string) {
   const migrationsDir = path.isAbsolute(configuredDir) ? configuredDir : path.join(process.cwd(), configuredDir);
 
   try {
-    await fs.stat(migrationsDir);
+    await fs.promises.access(migrationsDir);
   } catch (err) {
     throw new Error(`migrations directory does not exist: ${migrationsDir}`);
   }
@@ -54,7 +54,7 @@ export async function create(description: string) {
 
   // copy sample file to new file
   const destination = path.join(migrationsDir, filename);
-  await fs.copy(source, destination);
+  await fs.promises.copyFile(source, destination);
 
   return filename;
 }
@@ -63,16 +63,6 @@ export async function init() {
   const source = path.join(__dirname, `../samples/${DEFAULT_CONFIG_FILE_NAME}`);
   const destination = path.join(process.cwd(), DEFAULT_CONFIG_FILE_NAME);
 
-  const error = new Error(`config file already exists: ${destination}`);
-  try {
-    await fs.stat(destination);
-    throw error;
-  } catch (err) {
-    if (err.code !== "ENOENT") {
-      throw error;
-    }
-  }
-
-  await fs.copy(source, destination);
-  return fs.mkdirs(path.join(process.cwd(), "src/migrations"));
+  await fs.promises.copyFile(source, destination);
+  return fs.promises.mkdir(path.join(process.cwd(), "src/migrations"));
 }
