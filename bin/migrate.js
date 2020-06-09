@@ -12,7 +12,7 @@ program
   .action(() =>
     migrate
       .init()
-      .then(() => console.log(`Initialization successful. Check out \`${migrate.config.getConfigFilename()}\` file`))
+      .then(() => console.log(`Initialization successful. Check out \`${migrate.DEFAULT_CONFIG_FILE_NAME}\` file`))
       .catch(err => {
         console.error(`ERROR: ${err.message}`);
         process.exit(1);
@@ -27,11 +27,7 @@ program
     global.options = options;
     migrate
       .create(description)
-      .then(fileName =>
-        migrate.config.read().then(config => {
-          console.log(`Created: ${config.migrationsDir}/${fileName}`);
-        })
-      )
+      .then(destination => console.log(`Created: ${destination}`))
       .catch(err => {
         console.error(`ERROR: ${err.message}`);
         process.exit(1);
@@ -40,6 +36,6 @@ program
 
 program.parse(process.argv);
 
-if (_.isEmpty(program.rawArgs)) {
+if (!program.rawArgs || program.rawArgs.length === 0) {
   program.outputHelp();
 }
