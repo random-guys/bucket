@@ -1,6 +1,6 @@
 {
   "name": "@random-guys/bucket",
-  "version": "0.9.0-rc-1",
+  "version": "0.9.0-rc.1",
   "description": "Wrapper around axios for interservice communication",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
