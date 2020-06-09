@@ -1,17 +1,13 @@
-import { Db } from "mongodb";
-import { Connection } from "mongoose";
+import { Db, MongoClient } from "mongodb";
 
-export default {
-  async up(db: Db, conn: Connection) {
-    // TODO write your migration here.
-    // See https://github.com/seppevs/migrate-mongo/#creating-a-new-migration-script
-    // Example:
-    // await db.collection('albums').updateOne({artist: 'The Beatles'}, {$set: {blacklisted: true}});
-  },
+export async function up(db: Db, conn: MongoClient) {
+  // TODO write your migration here.
+  // Example:
+  // await db.collection('albums').updateOne({artist: 'The Beatles'}, {$set: {blacklisted: true}});
+}
 
-  async down(db: Db, conn: Connection) {
-    // TODO write the statements to rollback your migration (if possible)
-    // Example:
-    // await db.collection('albums').updateOne({artist: 'The Beatles'}, {$set: {blacklisted: false}});
-  }
-};
+export async function down(db: Db, conn: MongoClient) {
+  // TODO write the statements to rollback your migration (if possible)
+  // Example:
+  // await db.collection('albums').updateOne({artist: 'The Beatles'}, {$set: {blacklisted: false}});
+}
