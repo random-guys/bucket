@@ -4,6 +4,9 @@
   "description": "Wrapper around axios for interservice communication",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "bin": {
+    "bucket-migrate": "bin/migrate.js"
+  },
   "scripts": {
     "build": "tsc -p ./tsconfig.json",
     "watch": "tsc -w -p ./tsconfig.json",
@@ -19,7 +22,9 @@
   },
   "homepage": "https://github.com/random-guys/bucket#readme",
   "devDependencies": {
+    "@types/fs-extra": "^9.0.1",
     "@types/jest": "^25.2.3",
+    "@types/migrate-mongo": "^7.0.1",
     "@types/mongoose": "^5.5.18",
     "@types/supertest": "^2.0.9",
     "@types/uuid": "^3.4.4",
@@ -32,7 +37,11 @@
     "dist/"
   ],
   "dependencies": {
+    "commander": "^5.1.0",
+    "date-fns": "^2.14.0",
+    "fs-extra": "^9.0.1",
     "http-status-codes": "^1.3.2",
+    "migrate-mongo": "^7.2.1",
     "mongoose": "^5.7.1",
     "uuid": "^3.3.2"
   }
