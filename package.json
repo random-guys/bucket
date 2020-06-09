@@ -1,6 +1,6 @@
 {
   "name": "@random-guys/bucket",
-  "version": "0.9.0-rc.2",
+  "version": "0.9.0-rc.3",
   "description": "Wrapper around axios for interservice communication",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -33,7 +33,8 @@
     "typescript": "^3.5.2"
   },
   "files": [
-    "dist/"
+    "dist/",
+    "samples/"
   ],
   "dependencies": {
     "commander": "^5.1.0",
