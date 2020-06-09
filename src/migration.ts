@@ -15,8 +15,8 @@ export const DEFAULT_CONFIG_FILE_NAME = "migrate-mongo-config.js";
  * @param connection mongoose connection to be used for migration
  */
 export function migrateUp(connection: Connection) {
-  // @ts-ignore replace client with connection
-  return up(connection.db, connection);
+  // @ts-ignore wrong typing
+  return up(connection.db, connection.client);
 }
 
 /**
@@ -26,8 +26,8 @@ export function migrateUp(connection: Connection) {
  * @param connection mongoose connection to be used for migration
  */
 export function migrateDown(connection: Connection) {
-  // @ts-ignore replace client with connection
-  return down(connection.db, connection);
+  // @ts-ignore wrong typing
+  return down(connection.db, connection.client);
 }
 
 export async function create(description: string) {
