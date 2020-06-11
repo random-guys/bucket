@@ -282,4 +282,17 @@ export class BaseRepository<T extends Model> {
       });
     });
   }
+
+  /**
+   * Permanently deletes multiple documents by removing them from the collection(DB)
+   * @param query MongoDB query object or id string
+   */
+  truncate(query: object): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.model.deleteMany(query, err => {
+        if (err) return reject(err);
+        resolve();
+      });
+    });
+  }
 }
