@@ -235,14 +235,12 @@ export class BaseRepository<T extends Model> {
 
   /**
    * Updates multiple documents that match a particular query
-   * @param query MongoDB query object or id string
+   * @param query MongoDB query object
    * @param update Update onbject
    */
-  updateAll(query: string | object, update: any): Promise<T[]> {
-    const _query = this.getQuery(query);
-
+  updateAll(query: object, update: any): Promise<T[]> {
     return new Promise((resolve, reject) => {
-      this.model.updateMany(_query, update, (err, result) => {
+      this.model.updateMany(query, update, (err, result) => {
         if (err) return reject(err);
         resolve(result);
       });
