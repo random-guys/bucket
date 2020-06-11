@@ -27,6 +27,7 @@
     "@types/mongoose": "^5.5.18",
     "@types/supertest": "^2.0.9",
     "@types/uuid": "^3.4.4",
+    "faker": "^4.1.0",
     "jest": "^26.0.1",
     "supertest": "^4.0.2",
     "ts-jest": "^26.0.0",
