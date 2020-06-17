@@ -15,9 +15,11 @@ export const SchemaFactory = <T extends Model>(
     throw new Error("Please specify schema definition");
   }
 
+  const { indexes, definition } = getUniqueProps(schema);
+
   const mongooseSchema = new Schema<T>(
     {
-      ...schema,
+      ...definition,
       _id: { ...uuid },
       deleted_at: { type: SchemaTypes.Date }
     },
@@ -31,7 +33,7 @@ export const SchemaFactory = <T extends Model>(
   );
 
   if (autoIndex) {
-    for (const prop of getUniqueProps(schema)) {
+    for (const prop of indexes) {
       mongooseSchema.index({ deleted_at: 1, [prop]: 1 }, { unique: true });
     }
   }
@@ -39,18 +41,21 @@ export const SchemaFactory = <T extends Model>(
 };
 
 export function getUniqueProps(schema: SchemaDefinition) {
-  const uniqueProps = [];
-  for (const k of Object.keys(schema)) {
-    const propType = schema[k];
-    if (propType["unique"]) {
-      // prevent creating unique index
-      // @ts-ignore surely, wisdom knowledge and understanding
-      const { unique, ...rest } = propType;
-      schema[k] = rest;
+  const indexes = [];
+  const newSchema: SchemaDefinition = {};
 
-      // add to unique props
-      uniqueProps.push(k);
+  Object.keys(schema).forEach(k => {
+    const def = schema[k];
+    if (def["unique"]) {
+      // @ts-ignore
+      const { unique, ...rest } = def;
+
+      newSchema[k] = rest;
+      indexes.push(k);
+    } else {
+      newSchema[k] = def;
     }
-  }
-  return uniqueProps;
+  });
+
+  return { indexes, definition: newSchema };
 }
