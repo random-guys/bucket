@@ -5,4 +5,4 @@ export * from "./connect";
 export * from "./errors";
 export * from "./migration";
 export * from "./query";
-export * from "./utils.schema";
+export * from "./utils";

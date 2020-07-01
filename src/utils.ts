@@ -1,4 +1,4 @@
-import { Schema, SchemaTypes } from "mongoose";
+import { Schema, SchemaTypes, Mongoose } from "mongoose";
 import generateUUID from "uuid/v4";
 
 /**
@@ -75,4 +75,12 @@ export function uniqueIndex(schema: Schema, ...props: string[]) {
   );
   schema.index(indexes, { unique: true });
   return schema;
+}
+
+/**
+ * Checks if every connection being managed by mongoose is connected.
+ * @param ns the mongoose namespace, this prevents bucket from using it's own namespace
+ */
+export function isMongooseActive(ns: Mongoose) {
+  return ns.connections.every(conn => conn.readyState === 1);
 }

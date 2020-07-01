@@ -1,6 +1,6 @@
 import { Schema, SchemaDefinition, SchemaOptions, SchemaTypes } from "mongoose";
 import { Model } from "./base.model";
-import { readMapper, timestamps, uuid } from "./utils.schema";
+import { readMapper, timestamps, uuid } from "./utils";
 
 export const ArrayItemSchema = (schema: SchemaDefinition) => {
   return new Schema(schema, { _id: false });
