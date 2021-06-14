@@ -1,4 +1,5 @@
-import { Connection, Model as MongooseModel, Schema } from "mongoose";
+import { Connection, EnforceDocument, Model as MongooseModel, Schema } from "mongoose";
+
 import { Model } from "./base.model";
 import { DuplicateModelError, ModelNotFoundError } from "./errors";
 import { PaginationQuery, PaginationQueryResult, Query } from "./query";
@@ -66,14 +67,15 @@ export class BaseRepository<T extends Model> {
     return new Promise((resolve, reject) => {
       this.model.findOneAndUpdate(
         _query,
-        { $set: update },
+        // @ts-ignore TODO: https://github.com/Automattic/mongoose/issues/10333
+        update,
         {
           upsert: true,
           new: true,
           runValidators: true,
           setDefaultsOnInsert: true
         },
-        (err, result) => {
+        (err: any, result: EnforceDocument<T, {}>) => {
           if (err && err.code === 11000) return reject(new DuplicateModelError(`${this.name} exists already`));
 
           if (err) return reject(err);
@@ -111,6 +113,7 @@ export class BaseRepository<T extends Model> {
 
     return new Promise((resolve, reject) => {
       this.model
+        // @ts-ignore TODO: https://github.com/Automattic/mongoose/issues/10333
         .findOne(_query)
         .select(projections)
         .exec((err, result) => {
@@ -137,6 +140,7 @@ export class BaseRepository<T extends Model> {
       const sort = query.sort || "created_at";
 
       this.model
+        // @ts-ignore TODO: https://github.com/Automattic/mongoose/issues/10333
         .find(conditions)
         .select(query.projections)
         .sort(sort)
@@ -195,14 +199,14 @@ export class BaseRepository<T extends Model> {
     const _query = this.getQuery(query);
 
     return new Promise((resolve, reject) => {
-      this.model.findOne(_query, (err, result) => {
+      this.model.findOne(_query, (err: any, result: EnforceDocument<T, {}>) => {
         if (err) return reject(err);
 
         if (throwOnNull && !result) return reject(new ModelNotFoundError(`${this.name} not found`));
 
         result.set(update);
 
-        result.save((err, updatedDocument) => {
+        result.save((err: any, updatedDocument: EnforceDocument<T, {}>) => {
           if (err && err.code === 11000) return reject(new DuplicateModelError(`${this.name} exists already`));
 
           if (err) return reject(err);
@@ -240,7 +244,7 @@ export class BaseRepository<T extends Model> {
    */
   updateAll(query: object, update: any): Promise<T[]> {
     return new Promise((resolve, reject) => {
-      this.model.updateMany(query, update, (err, result) => {
+      this.model.updateMany(query, update, null, (err: any, result: EnforceDocument<T[], {}>) => {
         if (err) return reject(err);
         resolve(result);
       });
@@ -271,7 +275,7 @@ export class BaseRepository<T extends Model> {
     return new Promise((resolve, reject) => {
       const _query = this.getQuery(query);
 
-      this.model.findOneAndDelete(_query, (err, result) => {
+      this.model.findOneAndDelete(_query, null, (err: any, result: EnforceDocument<T, {}>) => {
         if (err) return reject(err);
 
         if (throwOnNull && !result) return reject(new ModelNotFoundError(`${this.name} not found`));
