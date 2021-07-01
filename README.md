@@ -105,9 +105,7 @@ Now run
 yarn migrations create <name>
 ```
 
-The command helps to create a migration.ts file in the `src -> migration` directory
-
-Now it's time to write your migration code in the `function up() inside` `-migration.ts`
+The command helps to create a migration script in the `src -> migration` directory as below:
 
 ```ts
 import { Db, MongoClient } from "mongodb";
@@ -125,4 +123,4 @@ export async function down(db: Db, conn: MongoClient) {
 }
 ```
 
-Now you can call `function up()` inside your server to run migration and also `function down()` can contain logic to undo migrations.
+When the script is applied, the `up` function is responsible for changing the database schema, while the `down` function is responsible for going back to the previous database state.
