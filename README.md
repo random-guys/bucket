@@ -102,7 +102,7 @@ The above command will initialize a `migrate-mongo-config.js` in the root direct
 Now run
 
 ```shell
-yarn migrations create [description]
+yarn migrations create <name>
 ```
 
 The command helps to create a migration.ts file in the `src -> migration` directory
@@ -125,9 +125,4 @@ export async function down(db: Db, conn: MongoClient) {
 }
 ```
 
-In your index.ts add the code below, this helps to call the `function up()`
-
-```ts
-await migrateUp(app.db);
-Log.info("🚛 Completed DB migration");
-```
+Now you can call `function up()` inside your server to run migration and also `function down()` can contain logic to undo migrations.
