@@ -123,7 +123,12 @@ export async function down(db: Db, conn: MongoClient) {
 }
 ```
 
-Call `migrateUp` or `migrateDown` function to apply migration.
-You can either call the function in your index.ts so that migration can apply at server start up or run `migrateUp` or `migrateDown` function in a script to apply migration.
-
 When the script is applied, the `up` function is responsible for changing the database schema, while the `down` function is responsible for going back to the previous database state.
+
+Call `migrateUp` or `migrateDown` function to apply migration.
+
+```ts
+migrateUp(connection);
+```
+
+`connection` is a mongodb connection.
