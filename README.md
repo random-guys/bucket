@@ -90,3 +90,45 @@ await mongoose.connect(url, defaultMongoOpts)
 const person = await PersonRepo.byID(id));
 const people = await PersonRepo.all({});
 ```
+
+## How to run a migration
+
+```shell
+yarn migrations init
+```
+
+The above command will initialize a `migrate-mongo-config.js` in the root directory and create a migration folder in your `src` folder.
+
+Now run
+
+```shell
+yarn migrations create <name>
+```
+
+The command helps to create a migration script in the `src -> migration` directory as below:
+
+```ts
+import { Db, MongoClient } from "mongodb";
+
+export async function up(db: Db, conn: MongoClient) {
+  // TODO write your migration here.
+  // Example:
+  // await db.collection('albums').updateOne({artist: 'The Beatles'}, {$set: {blacklisted: true}});
+}
+
+export async function down(db: Db, conn: MongoClient) {
+  // TODO write the statements to rollback your migration  (if possible)
+  // Example:
+  // await db.collection('albums').updateOne({artist: 'The Beatles'}, {$set: {blacklisted: false}});
+}
+```
+
+When the script is applied, the `up` function is responsible for changing the database schema, while the `down` function is responsible for going back to the previous database state.
+
+Call `migrateUp` or `migrateDown` function to apply migration.
+
+```ts
+migrateUp(connection);
+```
+
+`connection` is a mongodb connection.

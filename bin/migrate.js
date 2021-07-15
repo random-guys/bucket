@@ -22,7 +22,6 @@ program
 program
   .command("create [description]")
   .description("create a new database migration with the provided description")
-  .option("-f --file <file>", "use a custom config file")
   .action((description, options) => {
     global.options = options;
     migrate
