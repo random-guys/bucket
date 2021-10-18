@@ -46,7 +46,7 @@ export class BaseRepository<T extends Model> {
   create(attributes: Partial<T> | Partial<T>[]): Promise<T | T[]> {
     return new Promise((resolve, reject) => {
       this.model.create(attributes, (err: any, result: T | T[]) => {
-        if (err && err.code === 11000) return reject(new DuplicateModelError(`${this.name} exists already`));
+        if (err && err.code === 11000) return reject(new DuplicateModelError(`${this.name} already exist`));
 
         if (err) return reject(err);
 
@@ -76,7 +76,7 @@ export class BaseRepository<T extends Model> {
           setDefaultsOnInsert: true
         },
         (err: any, result: EnforceDocument<T, {}>) => {
-          if (err && err.code === 11000) return reject(new DuplicateModelError(`${this.name} exists already`));
+          if (err && err.code === 11000) return reject(new DuplicateModelError(`${this.name} already exist`));
 
           if (err) return reject(err);
           resolve(result);
@@ -207,7 +207,7 @@ export class BaseRepository<T extends Model> {
         result.set(update);
 
         result.save((err: any, updatedDocument: EnforceDocument<T, {}>) => {
-          if (err && err.code === 11000) return reject(new DuplicateModelError(`${this.name} exists already`));
+          if (err && err.code === 11000) return reject(new DuplicateModelError(`${this.name} already exist`));
 
           if (err) return reject(err);
           resolve(updatedDocument);
@@ -228,7 +228,7 @@ export class BaseRepository<T extends Model> {
 
     return new Promise((resolve, reject) => {
       this.model.findOneAndUpdate(_query, update, { new: true, runValidators: true }, (err, result) => {
-        if (err && err.code === 11000) return reject(new DuplicateModelError(`${this.name} exists already`));
+        if (err && err.code === 11000) return reject(new DuplicateModelError(`${this.name} already exist`));
 
         if (err) return reject(err);
         if (throwOnNull && !result) return reject(new ModelNotFoundError(`${this.name} not found`));
